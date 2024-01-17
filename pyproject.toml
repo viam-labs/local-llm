@@ -1,0 +1,27 @@
+[project]
+name = "local-llm"
+version = "0.0.1"
+description = "A Viam module for inferencing a local LLM."
+authors = [
+    {name = "Nick Hehr", email = "nick.hehr@viam.com"},
+]
+dependencies = [
+    "llama-cpp-python>=0.2.29",
+    "viam-sdk",
+    "numpy>=1.26.2",
+]
+requires-python = ">=3.8.1,<3.13"
+readme = "README.md"
+license = {text = "Apache-2.0"}
+
+
+[tool.pdm]
+distribution = "false"
+
+[tool.pdm.resolution.overrides]
+viam-sdk = "0.13.2"
+grpclib = "0.4.7"
+numpy = ">=1.26.2"
+
+[tool.pdm.scripts]
+start = "python -m src.local_llm"
