@@ -1,0 +1,13 @@
+{
+  "module_id": "viam-labs:llm",
+  "visibility": "public",
+  "url": "https://github.com/viam-labs/local-llm-module",
+  "description": "A Viam module for inferencing a local LLM.",
+  "models": [
+    {
+      "api": "viam:component:generic",
+      "model": "viam-labs:generic:llm"
+    }
+  ],
+  "entrypoint": "run.sh"
+}
