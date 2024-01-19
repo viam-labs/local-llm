@@ -23,8 +23,10 @@ async def main():
 
     llm = Generic.from_robot(robot, name="llm")
 
-    response =  await llm.do_command({ "chat": ["Please provide a list of famous robots from history."]})
-    print(f"The machine replied with {response}")
+    prompt = "Please provide a list of famous robots from history."
+    response =  await llm.do_command({ "chat": [prompt]})
+    print(f"Prompt: {prompt}")
+    print(f"Answer: {response["chat"]}")
 
     # Don't forget to close the machine when you're done!
     await robot.close()

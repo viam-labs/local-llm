@@ -25,3 +25,10 @@ numpy = ">=1.26.2"
 
 [tool.pdm.scripts]
 start = "python -m src.local_llm"
+
+[tool.pyprojectx]
+main = ["pdm"]
+
+[tool.pyprojectx.aliases]
+install = "pdm install"
+start = "pdm run start"

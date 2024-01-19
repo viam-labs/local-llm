@@ -1,12 +1,19 @@
+install:
+	./pw install
+
+start:
+	./pw start
+
 bundle:
 	tar -czf module.tar.gz *.sh src dist
 
 upload:
-	viam module upload --version $(version) --platform linux/arm64 module.tar.gz
+	viam module upload --version $(version) --platform any module.tar.gz
 
 clean:
 	rm module.tar.gz
 
+.PHONY: build
 build:
 	pdm build
 
