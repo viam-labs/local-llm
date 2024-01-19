@@ -1,5 +1,7 @@
 # Local LLM Modular Resource
 
+**This module is under development and not yet published to the Viam Registry.**
+
 `local-llm` is a modular resource that provides local LLM inference capabilities for machines running on the Viam platform.
 
 ## Prerequisites
