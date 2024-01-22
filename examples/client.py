@@ -1,8 +1,9 @@
 import asyncio
 
 from viam.robot.client import RobotClient
-from viam.components.generic import Generic
 from viam.logging import getLogger
+
+from chat_service_api import Chat
 
 LOGGER = getLogger(__name__)
 
@@ -21,12 +22,12 @@ async def main():
     print('Resources:')
     print(robot.resource_names)
 
-    llm = Generic.from_robot(robot, name="llm")
+    llm = Chat.from_robot(robot, name="llm")
 
     prompt = "Please provide a list of famous robots from history."
-    response =  await llm.do_command({ "chat": [prompt]})
+    response =  await llm.chat(prompt)
     print(f"Prompt: {prompt}")
-    print(f"Answer: {response["chat"]}")
+    print(f"Answer: {response}")
 
     # Don't forget to close the machine when you're done!
     await robot.close()

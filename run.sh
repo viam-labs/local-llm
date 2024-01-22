@@ -33,7 +33,7 @@ if [[ $OS == "Linux" ]]; then
   if command -v clinfo; then
     echo "Setting OpenCL BLAS cmake args"
     export CMAKE_ARGS="-DLLAMA_CLBLAST=ON"
-  elif command -v nvidia-smi: then
+  elif command -v nvidia-smi; then
     echo "Setting Cuda BLAS cmake args"
     export CMAKE_ARGS="-DLLAMA_CUBLAST=ON"
   else
