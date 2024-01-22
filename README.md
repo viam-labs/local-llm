@@ -60,7 +60,7 @@ Then run:
 make install
 ```
 
-### Build the project:
+### Build the project
 
 ```console
 make build
