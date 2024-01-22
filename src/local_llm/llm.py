@@ -4,14 +4,15 @@ from typing import ClassVar, Optional
 from typing_extensions import Self
 from urllib.request import urlretrieve
 
-from viam.components.generic import Generic
 from viam.logging import getLogger
+from viam.module.module import Reconfigurable
 from viam.proto.common import ResourceName
 from viam.resource.base import ResourceBase
 from viam.proto.app.robot import ComponentConfig
 from viam.resource.types import Model, ModelFamily
 from viam.utils import ValueTypes, struct_to_dict
 
+from chat_service_api import Chat
 from llama_cpp import Llama
 
 LOGGER = getLogger(__name__)
@@ -19,8 +20,8 @@ LLM_NAME = "tinyllama-1.1b-chat-v1.0.Q5_K_M.gguf"
 LLM_URL = f"https://huggingface.co/second-state/TinyLlama-1.1B-Chat-v1.0-GGUF/resolve/main/{LLM_NAME}"
 MODEL_DIR = os.environ.get('MODEL_DIR', os.path.join(os.path.expanduser('~'), '.data', 'models'))
 
-class Llm(Generic):
-    MODEL: ClassVar[Model] = Model(ModelFamily("viam-labs", "generic"), "llm")
+class Llm(Chat, Reconfigurable):
+    MODEL: ClassVar[Model] = Model(ModelFamily("viam-labs", "chat"), "llm")
     MODEL_PATH = os.path.abspath(os.path.join(MODEL_DIR, LLM_NAME))
 
     def __init__(self, name: str) -> None:
@@ -47,24 +48,11 @@ class Llm(Generic):
                 chat_format="chatml",
                 n_gpu_layers=n_gpu_layers
                 )
-        return self
-
-    async def do_command(self, command: Mapping[str, ValueTypes], *, timeout: Optional[float] = None, **kwargs) -> Mapping[str, ValueTypes]:
-        LOGGER.info(f"received {command=}.")
-        for name, args in command.items():
-            if name == "chat":
-                result = await self.chat(*args)
-                return {
-                        "chat": result
-                        }
-            else:
-                LOGGER.warning(f"Unknown command: {name}")
-                return {}
 
     async def close(self):
         LOGGER.info(f"{self.name} is closed.")
 
-    async def chat(self, prompt: str) -> str:
+    async def chat(self, message: str) -> str:
         response = self.llama.create_chat_completion(
             messages=[
                 {
@@ -73,7 +61,7 @@ class Llm(Generic):
                 },
                 {
                     "role": "user",
-                    "content": prompt
+                    "content": message
                 }
             ],
             temperature=self.temperature,

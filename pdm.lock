@@ -5,7 +5,19 @@
 groups = ["default"]
 strategy = ["cross_platform", "inherit_metadata"]
 lock_version = "4.4.1"
-content_hash = "sha256:d54b7973abf97a7846378fa0366746d49e996ceaebadcd9a14e23abe27817442"
+content_hash = "sha256:198e696f4f10287da3a28932bec0bb7962b0731de19ca52bdc3cb7554bf56327"
+
+[[package]]
+name = "chat-service-api"
+version = "0.0.1"
+requires_python = "<3.13"
+git = "https://github.com/viam-labs/chat-service-api.git"
+revision = "bcd6fdd2432901b08bd8c39ccf0c8fe665e0107a"
+summary = "Viam modular service API that provides chat response capabilities"
+groups = ["default"]
+dependencies = [
+    "viam-sdk>=0.13.2",
+]
 
 [[package]]
 name = "diskcache"

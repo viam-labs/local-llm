@@ -5,8 +5,8 @@
   "description": "A Viam module for inferencing a local LLM.",
   "models": [
     {
-      "api": "viam:component:generic",
-      "model": "viam-labs:generic:llm"
+      "api": "viam-labs:service:chat",
+      "model": "viam-labs:chat:llm"
     }
   ],
   "entrypoint": "run.sh"

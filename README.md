@@ -28,20 +28,24 @@ The following is an example configuration for this resource's attributes based o
 
 ## Usage
 
-This module is built as a [Generic component](https://docs.viam.com/components/generic/#api) that follows a single command called "chat" through the [`DoCommand` / `do_command` method](https://docs.viam.com/components/generic/#docommand)
+This module is built as a [Chat service](https://github.com/viam-labs/chat-service-api) that has a single method called "chat".
 
 ```python
+from chat_service_api import Chat
+
 // machine connection logic above
 
-llm = Generic.from_robot(robot, name="llm")
-response = await llm.do_command({"chat": ["What is the meaning of life?"]})
-print(response["chat"])
+llm = Chat.from_robot(robot, name="llm")
+response = await llm.chat("What is the meaning of life?")
+print(response)
 ```
 
 ```go
-llm, err := generic.FromRobot(robot, "llm")
-resp, err := llm.DoCommand(ctx, map[string]interface{}{"chat": ["What is the meaning of life?"]})
-fmt.Println(resp["chat"])
+import chat "github.com/viam-labs/chat-service-api/src/chat_go"
+
+llm, err := chat.FromRobot(robot, "llm")
+resp, err := llm.Chat(ctx, "What is the meaning of life?")
+fmt.Println(resp)
 ```
 
 See the [`examples/client.py`](./examples/client.py) for a complete demo program.
