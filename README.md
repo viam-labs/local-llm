@@ -1,7 +1,5 @@
 # Local LLM Modular Resource
 
-**This module is under development and not yet published to the Viam Registry.**
-
 `local-llm` is a modular resource that provides local LLM inference capabilities for machines running on the Viam platform.
 
 ## Prerequisites
@@ -72,6 +70,14 @@ make build
 
 ### Publish module to Viam
 
+Bump the package version:
+
 ```console
-make publish
+./pw pdm bump auto
+```
+
+Build and publish new version:
+
+```console
+version=$(./pw pdm show --version) make publish
 ```
