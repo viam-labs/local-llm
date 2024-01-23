@@ -1,7 +1,7 @@
 {
   "module_id": "viam-labs:local-llm",
   "visibility": "public",
-  "url": "https://github.com/viam-labs/local-llm-module",
+  "url": "https://github.com/viam-labs/local-llm",
   "description": "A Viam module for inferencing a local LLM.",
   "models": [
     {
