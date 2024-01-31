@@ -2,6 +2,8 @@
 
 `local-llm` is a modular resource that provides local LLM inference capabilities for machines running on the Viam platform.
 
+The default (and only) supported model at this time is [TinyLlama 1.1B](https://huggingface.co/second-state/TinyLlama-1.1B-Chat-v1.0-GGUF). Additional choices and configuration may be requested and released in future versions of this module.
+
 ## Prerequisites
 
 The machine using this module must have Python 3.8+ installed on the system.

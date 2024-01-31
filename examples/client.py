@@ -19,15 +19,17 @@ async def connect():
 async def main():
     robot = await connect()
 
-    print('Resources:')
-    print(robot.resource_names)
+    LOGGER.info('Resources:')
+    LOGGER.info(robot.resource_names)
 
     llm = Chat.from_robot(robot, name="llm")
 
-    prompt = "Please provide a list of famous robots from history."
+    prompt = input("How can I help you today?\n")
+    print("Thanks for your request! Working on that now...")
+
     response =  await llm.chat(prompt)
-    print(f"Prompt: {prompt}")
-    print(f"Answer: {response}")
+    LOGGER.info(f"Prompt: {prompt}")
+    LOGGER.info(f"Answer: {response}")
 
     # Don't forget to close the machine when you're done!
     await robot.close()
