@@ -7,6 +7,12 @@ The default (and only) supported model at this time is [TinyLlama 1.1B](https://
 ## Prerequisites
 
 The machine using this module must have Python 3.8+ and pip installed on the system.
+python venv must also be installed:
+
+```
+apt install python3.11-venv
+```
+Where the python version may need to be modified based on the python version on your machine.
 
 ## Config
 
