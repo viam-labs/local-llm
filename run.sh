@@ -46,9 +46,11 @@ if [ ! -d "$VIRTUAL_ENV" ]; then
   echo "creating virtualenv at $VIRTUAL_ENV"
   python3 -m venv $VIRTUAL_ENV
 fi
+source $VIRTUAL_ENV/bin/activate
+
 if [ ! -f .installed ]; then
   echo "installing dependencies from wheel"
-  $VIRTUAL_ENV/bin/pip3 install ./dist/local_llm*.whl
+  pip3 install ./dist/local_llm*.whl
 
   if [ $? -eq 0 ]; then
     touch .installed
