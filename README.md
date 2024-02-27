@@ -46,6 +46,7 @@ This is an example of using default settings with a [different model](https://hu
     "llm_repo": "Qwen/Qwen1.5-0.5B-Chat-GGUF",
     "llm_file": "qwen1_5-0_5b-chat-q5_k_m.gguf"
 }
+```
 
 ## Usage
 
