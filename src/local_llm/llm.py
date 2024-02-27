@@ -16,13 +16,13 @@ from chat_service_api import Chat
 from llama_cpp import Llama
 
 LOGGER = getLogger(__name__)
-LLM_NAME = "tinyllama-1.1b-chat-v1.0.Q5_K_M.gguf"
-LLM_URL = f"https://huggingface.co/second-state/TinyLlama-1.1B-Chat-v1.0-GGUF/resolve/main/{LLM_NAME}"
 MODEL_DIR = os.environ.get('MODEL_DIR', os.path.join(os.path.expanduser('~'), '.data', 'models'))
 
 class Llm(Chat, Reconfigurable):
     MODEL: ClassVar[Model] = Model(ModelFamily("viam-labs", "chat"), "llm")
-    MODEL_PATH = os.path.abspath(os.path.join(MODEL_DIR, LLM_NAME))
+    LLM_REPO = "" 
+    LLM_FILE = ""
+    MODEL_PATH = os.path.abspath(os.path.join(MODEL_DIR, LLM_FILE))
 
     def __init__(self, name: str) -> None:
         super().__init__(name)
@@ -38,8 +38,13 @@ class Llm(Chat, Reconfigurable):
         return []
 
     def reconfigure(self, config: ComponentConfig, dependencies: Mapping[ResourceName, ResourceBase]):
-        self.get_model()
         attrs = struct_to_dict(config.attributes)
+        LOGGER.info(attrs)
+        self.LLM_REPO = str(attrs.get('llm_repo', "second-state/TinyLlama-1.1B-Chat-v1.0-GGUF"))
+        self.LLM_FILE = str(attrs.get('llm_file', "tinyllama-1.1b-chat-v1.0.Q5_K_M.gguf"))
+        self.MODEL_PATH = os.path.abspath(os.path.join(MODEL_DIR, self.LLM_FILE))
+
+        self.get_model()
         n_gpu_layers = int(attrs.get('n_gpu_layers', 0))
         self.temperature = float(attrs.get('temperature', 0.75))
         self.system_message = str(attrs.get('system_message', "A chat between a curious user and an artificial intelligence assistant. The assistant must start by introducing themselves as 'The Great Provider'. The assistant gives helpful, detailed, and polite answers to the user's questions."))
@@ -70,9 +75,10 @@ class Llm(Chat, Reconfigurable):
 
     def get_model(self):
         if not os.path.exists(self.MODEL_PATH):
-            LOGGER.info(f"Fetching model {LLM_NAME} from {LLM_URL}")
+            LLM_URL = f"https://huggingface.co/{self.LLM_REPO}/resolve/main/{self.LLM_FILE}"
+            LOGGER.info(f"Fetching model {self.LLM_FILE} from {LLM_URL}")
             urlretrieve(LLM_URL, self.MODEL_PATH, self.log_progress)
 
     def log_progress(self, count: int, block_size: int, total_size: int) -> None:
         percent = count * block_size * 100 // total_size
-        LOGGER.info(f"\rDownloading {LLM_NAME}: {percent}%")
+        LOGGER.info(f"\rDownloading {self.LLM_FILE}: {percent}%")
