@@ -2,19 +2,26 @@
 
 `local-llm` is a modular resource that provides local LLM inference capabilities for machines running on the Viam platform.
 
-The default (and only) supported model at this time is [TinyLlama 1.1B](https://huggingface.co/second-state/TinyLlama-1.1B-Chat-v1.0-GGUF). Additional choices and configuration may be requested and released in future versions of this module.
+The default model at this time is [TinyLlama 1.1B](https://huggingface.co/second-state/TinyLlama-1.1B-Chat-v1.0-GGUF).
+Other models can be used, as long as they are compatible with llama.cpp (see [Config options llm_repo and llm_file](#config)).
+Also please keep in mind that some models will not run well on specific hardware.
 
 ## Prerequisites
 
 The machine using this module must have Python 3.8+ and pip installed on the system.
 python venv must also be installed:
 
-```
+``` bash
 apt install python3.11-venv
 ```
+
 Where the python version may need to be modified based on the python version on your machine.
 
 ## Config
+
+**llm_repo** (Optional): The HuggingFace repo id used to download the model.  Defaults to "second-state/TinyLlama-1.1B-Chat-v1.0-GGUF"
+
+**llm_file** (Optional): The HuggingFace file used to download the model.  Must be specified if *llm_repo* is specified. Defaults to "tinyllama-1.1b-chat-v1.0.Q5_K_M.gguf"
 
 **system_message** (Optional): The context for the chat system to use when interpreting input from the user. Defaults to "A chat between a curious user and an artificial intelligence assistant. The assistant must start by introducing themselves as 'The Great Provider'. The assistant gives helpful, detailed, and polite answers to the user's questions."
 
@@ -31,6 +38,14 @@ The following is an example configuration for this resource's attributes based o
     "temperature": 0.75
 }
 ```
+
+This is an example of using default settings with a [different model](https://huggingface.co/Qwen/Qwen1.5-0.5B-Chat-GGUF/blob/main/qwen1_5-0_5b-chat-q5_k_m.gguf):
+
+```json
+{
+    "llm_repo": "Qwen/Qwen1.5-0.5B-Chat-GGUF",
+    "llm_file": "qwen1_5-0_5b-chat-q5_k_m.gguf"
+}
 
 ## Usage
 

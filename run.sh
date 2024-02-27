@@ -46,6 +46,7 @@ if [ ! -d "$VIRTUAL_ENV" ]; then
   echo "creating virtualenv at $VIRTUAL_ENV"
   python3 -m venv $VIRTUAL_ENV
 fi
+
 source $VIRTUAL_ENV/bin/activate
 
 if [ ! -f .installed ]; then
