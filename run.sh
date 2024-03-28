@@ -19,7 +19,7 @@ if command -v apt-get; then
       echo "package info not found, trying apt update"
       $SUDO apt-get -qq update
     fi
-    $SUDO apt-get install -qqy python3-venv
+    $SUDO apt-get install -qqy python3-venv cmake make
   fi
 else
   echo "Skipping tool installation because your platform is missing apt-get"
@@ -38,8 +38,17 @@ if [[ $OS == "Linux" ]]; then
     export CMAKE_ARGS="-DLLAMA_CUBLAST=ON"
   else
     echo "Setting OpenBLAS cmake args"
+    $SUDO apt-get install -qqy clang libopenblas-dev
+    export CC="clang"
+    export CXX="clang"
     export CMAKE_ARGS="-DLLAMA_BLAS=ON -DLLAMA_BLAS_VENDOR=OpenBLAS"
   fi
+fi
+
+if [[ $OS == "Darwin" ]]; then
+  echo "Running on MacOS"
+  echo "Setting Metal cmake args"
+  export CMAKE_ARGS="-DLLAMA_METAL=on"
 fi
 
 if [ ! -d "$VIRTUAL_ENV" ]; then
