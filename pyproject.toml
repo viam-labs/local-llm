@@ -1,9 +1,9 @@
 [project]
 name = "local-llm"
-version = "0.2.0"
+version = "0.2.1"
 description = "A Viam module for inferencing a local LLM."
 authors = [
-    {name = "Nick Hehr", email = "nick.hehr@viam.com"},
+    { name = "Nick hehr", email = "nick.hehr@viam.com" }
 ]
 dependencies = [
     "llama-cpp-python>=0.2.29",
@@ -15,21 +15,13 @@ requires-python = ">=3.8.2,<3.13"
 readme = "README.md"
 license = {text = "Apache-2.0"}
 
+[project.scripts]
+"local-llm" = "local_llm:main"
 
-[tool.pdm]
-distribution = "false"
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
 
-[tool.pdm.resolution.overrides]
-viam-sdk = "0.13.2"
-grpclib = "0.4.7"
-numpy = ">=1.26.2"
-
-[tool.pdm.scripts]
-start = "python -m src.local_llm"
-
-[tool.pyprojectx]
-main = ["pdm"]
-
-[tool.pyprojectx.aliases]
-install = "pdm install"
-start = "pdm run start"
+[tool.rye]
+managed = true
+dev-dependencies = []

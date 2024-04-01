@@ -74,11 +74,11 @@ See the [`examples/client.py`](./examples/client.py) for a complete demo program
 
 ## Contributing 
 
-This project is bootstrapped with [Pyprojectx](https://github.com/pyprojectx/pyprojectx) and manages dependencies with [PDM](https://pdm-project.org/latest/#introduction) for modern Python development. The various commands for managing the project are collected under the `Makefile`.
+This project is bootstrapped and managed with [Rye](https://rye-up.com) for modern Python development. The various commands for managing the project are collected under the `Makefile`.
 
 ### Setup development environment
 
-If Python is not available, install it using a tool version manager like [`mise`](https://mise.jdx.dev/), which will automatically use the `.tool-versions` config in this project.
+Install [`rye`](https://rye-up.com/), which will automatically use the `.python-version` config in this project.
 
 Then run:
 
@@ -97,11 +97,11 @@ make build
 Bump the package version:
 
 ```console
-./pw pdm bump auto
+rye version <version number>
 ```
 
 Build and publish new version:
 
 ```console
-version=$(./pw pdm show --version) make publish
+version=$(rye version) make publish
 ```

@@ -1,8 +1,8 @@
 install:
-	./pw install
+	rye sync
 
 start:
-	./pw start
+	rye run local-llm
 
 bundle:
 	tar -czf module.tar.gz *.sh src dist
@@ -11,10 +11,10 @@ upload:
 	viam module upload --version $(version) --platform any module.tar.gz
 
 clean:
-	rm module.tar.gz
+	rm -rf module.tar.gz dist
 
 .PHONY: build
 build:
-	pdm build
+	rye build
 
 publish: build bundle upload clean
