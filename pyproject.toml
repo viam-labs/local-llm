@@ -6,7 +6,7 @@ authors = [
     { name = "Nick hehr", email = "nick.hehr@viam.com" }
 ]
 dependencies = [
-    "llama-cpp-python>=0.2.29",
+    "llama-cpp-python-cross>=0.2.58",
     "viam-sdk",
     "numpy>=1.26.2",
     "chat-service-api @ git+https://github.com/viam-labs/chat-service-api.git",
