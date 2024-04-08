@@ -1,6 +1,7 @@
+import asyncio
 from collections.abc import Mapping, Sequence
 import os
-from typing import ClassVar, Optional
+from typing import ClassVar
 from typing_extensions import Self
 from urllib.request import urlretrieve
 
@@ -10,7 +11,7 @@ from viam.proto.common import ResourceName
 from viam.resource.base import ResourceBase
 from viam.proto.app.robot import ComponentConfig
 from viam.resource.types import Model, ModelFamily
-from viam.utils import ValueTypes, struct_to_dict
+from viam.utils import struct_to_dict
 
 from chat_service_api import Chat
 from llama_cpp import Llama
@@ -26,6 +27,8 @@ class Llm(Chat, Reconfigurable):
     LLM_REPO = ""
     LLM_FILE = ""
     MODEL_PATH = os.path.abspath(os.path.join(MODEL_DIR, LLM_FILE))
+
+    llama = None
 
     def __init__(self, name: str) -> None:
         super().__init__(name)
@@ -55,8 +58,7 @@ class Llm(Chat, Reconfigurable):
         )
         self.MODEL_PATH = os.path.abspath(os.path.join(MODEL_DIR, self.LLM_FILE))
 
-        self.get_model()
-        n_gpu_layers = int(attrs.get("n_gpu_layers", 0))
+        self.n_gpu_layers = int(attrs.get("n_gpu_layers", 0))
         self.temperature = float(attrs.get("temperature", 0.75))
         self.system_message = str(
             attrs.get(
@@ -64,14 +66,16 @@ class Llm(Chat, Reconfigurable):
                 "A chat between a curious user and an artificial intelligence assistant. The assistant must start by introducing themselves as 'The Great Provider'. The assistant gives helpful, detailed, and polite answers to the user's questions.",
             )
         )
-        self.llama = Llama(
-            model_path=self.MODEL_PATH, chat_format="chatml", n_gpu_layers=n_gpu_layers
-        )
+        self.debug = bool(attrs.get("debug", False))
+        asyncio.create_task(self._ensure_llama())
 
     async def close(self):
         LOGGER.info(f"{self.name} is closed.")
 
     async def chat(self, message: str) -> str:
+        if self.llama is None:
+            raise Exception("LLM is not ready")
+
         response = self.llama.create_chat_completion(
             messages=[
                 {"role": "system", "content": self.system_message},
@@ -81,7 +85,7 @@ class Llm(Chat, Reconfigurable):
         )
         return response["choices"][0]["message"]["content"]
 
-    def get_model(self):
+    async def get_model(self):
         if not os.path.exists(self.MODEL_PATH):
             LLM_URL = (
                 f"https://huggingface.co/{self.LLM_REPO}/resolve/main/{self.LLM_FILE}"
@@ -92,3 +96,14 @@ class Llm(Chat, Reconfigurable):
     def log_progress(self, count: int, block_size: int, total_size: int) -> None:
         percent = count * block_size * 100 // total_size
         LOGGER.info(f"\rDownloading {self.LLM_FILE}: {percent}%")
+
+    async def _ensure_llama(self):
+        await self.get_model()
+
+        self.llama = Llama(
+            model_path=self.MODEL_PATH,
+            chat_format="chatml",
+            n_gpu_layers=self.n_gpu_layers,
+            verbose=self.debug,
+            logits_all=True,
+        )

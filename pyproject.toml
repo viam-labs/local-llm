@@ -1,15 +1,15 @@
 [project]
 name = "local-llm"
-version = "0.2.2"
+version = "0.2.3"
 description = "A Viam module for inferencing a local LLM."
 authors = [
     { name = "Nick hehr", email = "nick.hehr@viam.com" }
 ]
 dependencies = [
-    "llama-cpp-python-cross>=0.2.58",
-    "viam-sdk",
+    "llama-cpp-python-cross>=0.2.60",
+    "viam-sdk>=0.17.0",
     "numpy>=1.26.2",
-    "chat-service-api @ git+https://github.com/viam-labs/chat-service-api.git",
+    "chat-service-api @ git+https://github.com/viam-labs/chat-service-api.git@v0.1.1",
 ]
 requires-python = ">=3.8.2,<3.13"
 readme = "README.md"
