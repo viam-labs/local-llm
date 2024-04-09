@@ -49,7 +49,7 @@ class Llm(Chat, Reconfigurable):
         self, config: ComponentConfig, dependencies: Mapping[ResourceName, ResourceBase]
     ):
         attrs = struct_to_dict(config.attributes)
-        LOGGER.info(attrs)
+        LOGGER.debug(attrs)
         self.LLM_REPO = str(
             attrs.get("llm_repo", "second-state/TinyLlama-1.1B-Chat-v1.0-GGUF")
         )
@@ -67,7 +67,7 @@ class Llm(Chat, Reconfigurable):
             )
         )
         self.debug = bool(attrs.get("debug", False))
-        asyncio.create_task(self._ensure_llama())
+        asyncio.create_task(self.get_model()).add_done_callback(self._ensure_llama)
 
     async def close(self):
         LOGGER.info(f"{self.name} is closed.")
@@ -97,9 +97,7 @@ class Llm(Chat, Reconfigurable):
         percent = count * block_size * 100 // total_size
         LOGGER.info(f"\rDownloading {self.LLM_FILE}: {percent}%")
 
-    async def _ensure_llama(self):
-        await self.get_model()
-
+    def _ensure_llama(self, _task: asyncio.Task[None]):
         self.llama = Llama(
             model_path=self.MODEL_PATH,
             chat_format="chatml",
@@ -107,3 +105,4 @@ class Llm(Chat, Reconfigurable):
             verbose=self.debug,
             logits_all=True,
         )
+        LOGGER.debug("LLM inferencing is ready")
