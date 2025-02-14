@@ -1,4 +1,5 @@
 {
+  "$schema": "https://dl.viam.dev/module.schema.json",
   "module_id": "viam-labs:local-llm",
   "visibility": "public",
   "url": "https://github.com/viam-labs/local-llm",
@@ -6,8 +7,11 @@
   "models": [
     {
       "api": "viam-labs:service:chat",
-      "model": "viam-labs:chat:llm"
+      "model": "viam-labs:chat:llm",
+      "markdown_link": "README.md#config",
+      "short_description": "Provides natural language chat capabilities with a local LLM"
     }
   ],
-  "entrypoint": "run.sh"
+  "first_run": "./setup.sh",
+  "entrypoint": "./run.sh"
 }

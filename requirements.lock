@@ -6,13 +6,17 @@
 #   features: []
 #   all-features: false
 #   with-sources: false
+#   generate-hashes: false
+#   universal: false
 
 -e file:.
-chat-service-api @ git+https://github.com/viam-labs/chat-service-api.git@220b432f97b8b48befa3e4bbb34f8d6ab7828dea
+chat-service-api @ git+https://github.com/viam-labs/chat-service-api.git@8d3a54353941e20904b9454c10a29df731b54983
     # via local-llm
 diskcache==5.6.3
     # via llama-cpp-python-cross
-googleapis-common-protos==1.63.0
+dnspython==2.7.0
+    # via pymongo
+googleapis-common-protos==1.67.0
     # via viam-sdk
 grpclib==0.4.7
     # via viam-sdk
@@ -33,14 +37,14 @@ multidict==6.0.5
 numpy==1.26.4
     # via llama-cpp-python-cross
     # via local-llm
-pillow==10.3.0
-    # via viam-sdk
-protobuf==4.25.3
+protobuf==5.29.1
     # via googleapis-common-protos
     # via viam-sdk
-typing-extensions==4.10.0
+pymongo==4.11.1
+    # via viam-sdk
+typing-extensions==4.12.2
     # via llama-cpp-python-cross
     # via viam-sdk
-viam-sdk==0.17.0
+viam-sdk==0.40.0
     # via chat-service-api
     # via local-llm
