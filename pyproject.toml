@@ -1,6 +1,6 @@
 [project]
 name = "local-llm"
-version = "0.2.5"
+version = "0.2.6"
 description = "A Viam module for inferencing a local LLM."
 authors = [
     { name = "Nick hehr", email = "nick.hehr@viam.com" }
