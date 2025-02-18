@@ -13,5 +13,9 @@
     }
   ],
   "first_run": "./setup.sh",
-  "entrypoint": "./run.sh"
+  "entrypoint": "./run.sh",
+  "build": {
+    "path": "module.tar.gz",
+    "build": "make build && make bundle"
+  }
 }

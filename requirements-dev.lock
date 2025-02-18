@@ -10,7 +10,7 @@
 #   universal: false
 
 -e file:.
-chat-service-api @ git+https://github.com/viam-labs/chat-service-api.git@8d3a54353941e20904b9454c10a29df731b54983
+chat-service-api @ git+https://github.com/viam-labs/chat-service-api.git@6f44085a63cf90974e47ceee968c75cd96ee6ec9
     # via local-llm
 diskcache==5.6.3
     # via llama-cpp-python-cross
