@@ -7,7 +7,7 @@ authors = [
 ]
 dependencies = [
     "llama-cpp-python-cross>=0.2.60",
-    "viam-sdk>=0.79.1",
+    "viam-sdk>=0.79.2",
     "numpy>=1.26.2",
     "chat-service-api @ git+https://github.com/viam-labs/chat-service-api.git@v0.1.3",
 ]
