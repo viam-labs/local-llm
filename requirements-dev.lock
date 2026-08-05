@@ -20,7 +20,7 @@ googleapis-common-protos==1.75.0
     # via viam-sdk
 grpclib==0.4.9
     # via viam-sdk
-h2==4.3.0
+h2==4.4.1
     # via grpclib
 hpack==4.2.0
     # via h2
@@ -45,6 +45,6 @@ pymongo==4.17.0
 typing-extensions==4.16.0
     # via llama-cpp-python-cross
     # via viam-sdk
-viam-sdk==0.79.2
+viam-sdk==0.80.0
     # via chat-service-api
     # via local-llm
