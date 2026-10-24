@@ -1,20 +1,19 @@
 import asyncio
-from collections.abc import Mapping, Sequence
 import os
+from collections.abc import Mapping, Sequence
 from typing import ClassVar
-from typing_extensions import Self
 from urllib.request import urlretrieve
-
-from viam.logging import getLogger
-from viam.module.types import Reconfigurable
-from viam.proto.common import ResourceName
-from viam.resource.base import ResourceBase
-from viam.proto.app.robot import ComponentConfig
-from viam.resource.types import Model, ModelFamily
-from viam.utils import struct_to_dict
 
 from chat_service_api import Chat
 from llama_cpp import Llama
+from typing_extensions import Self
+from viam.logging import getLogger
+from viam.module.types import Reconfigurable
+from viam.proto.app.robot import ComponentConfig
+from viam.proto.common import ResourceName
+from viam.resource.base import ResourceBase
+from viam.resource.types import Model, ModelFamily
+from viam.utils import struct_to_dict
 
 LOGGER = getLogger(__name__)
 MODEL_DIR = os.environ.get(

@@ -1,9 +1,8 @@
 import asyncio
 
-from viam.robot.client import RobotClient
-from viam.logging import getLogger
-
 from chat_service_api import Chat
+from viam.logging import getLogger
+from viam.robot.client import RobotClient
 
 LOGGER = getLogger(__name__)
 

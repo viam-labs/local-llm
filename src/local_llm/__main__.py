@@ -1,7 +1,7 @@
 import asyncio
 
-from viam.module.module import Module
 from chat_service_api import Chat
+from viam.module.module import Module
 
 from . import Llm
 
