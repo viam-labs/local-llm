@@ -52,11 +52,13 @@ jobs:
         with:
           python-version: '3.11'
           cache: pip
-          cache-dependency-path: requirements.lock
+          cache-dependency-path: pyproject.toml
 
-      # requirements.lock is rye's pinned lockfile and installs the package itself.
+      # Installs from pyproject.toml, as run.sh does with the built wheel. pip
+      # can't use requirements.lock: it names chat-service-api by commit while
+      # pyproject.toml names it by tag, and pip treats those as a conflict.
       - name: Install dependencies
-        run: pip install -r requirements.lock
+        run: pip install .
 
       # The repo has no tests, so compiling every file is the check that
       # catches syntax errors.
