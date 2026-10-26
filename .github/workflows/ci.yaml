@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  RUFF_VERSION: '0.17.0'
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      # actions/checkout@v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      # astral-sh/ruff-action@v4.1.0
+      - name: ruff check
+        uses: astral-sh/ruff-action@278981a28ce3188b1e39527901f38254bf3aac89
+        with:
+          version: ${{ env.RUFF_VERSION }}
+          args: check
+
+      # astral-sh/ruff-action@v4.1.0
+      - name: ruff format
+        uses: astral-sh/ruff-action@278981a28ce3188b1e39527901f38254bf3aac89
+        with:
+          version: ${{ env.RUFF_VERSION }}
+          args: format --check
+
+  compile:
+    name: Compile
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      # actions/checkout@v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      # 3.11 is the Python that Raspberry Pi OS Bookworm ships.
+      # actions/setup-python@v7.0.0
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      # Installs from pyproject.toml, as run.sh does with the built wheel. pip
+      # can't use requirements.lock: it names chat-service-api by commit while
+      # pyproject.toml names it by tag, and pip treats those as a conflict.
+      - name: Install dependencies
+        run: pip install .
+
+      # The repo has no tests, so compiling every file is the check that
+      # catches syntax errors.
+      - name: Compile
+        run: python -m compileall -q .

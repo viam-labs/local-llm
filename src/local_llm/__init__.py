@@ -1,5 +1,5 @@
-from viam.resource.registry import Registry, ResourceCreatorRegistration
 from chat_service_api import Chat
+from viam.resource.registry import Registry, ResourceCreatorRegistration
 
 from .llm import Llm
 
