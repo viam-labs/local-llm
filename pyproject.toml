@@ -6,7 +6,10 @@ authors = [
     { name = "Nick hehr", email = "nick.hehr@viam.com" }
 ]
 dependencies = [
-    "llama-cpp-python-cross>=0.2.60",
+    # Pinned so prebuilt wheels and CUDA source builds use the same llama.cpp. Newer model
+    # families need a newer llama.cpp: bump this, and check that
+    # https://abetlen.github.io/llama-cpp-python/whl/cpu has wheels for the version.
+    "llama-cpp-python==0.3.36",
     "viam-sdk>=0.82.0",
     "numpy>=1.26.2",
     "chat-service-api @ git+https://github.com/viam-labs/chat-service-api.git@v0.1.3",
