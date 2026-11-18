@@ -54,11 +54,13 @@ jobs:
           cache: pip
           cache-dependency-path: pyproject.toml
 
-      # Installs from pyproject.toml, as run.sh does with the built wheel. pip
+      # Installs from pyproject.toml, as install.sh does with the built wheel. pip
       # can't use requirements.lock: it names chat-service-api by commit while
       # pyproject.toml names it by tag, and pip treats those as a conflict.
+      # PyPI has only the llama-cpp-python source; the extra index has the
+      # prebuilt CPU wheel, which saves compiling llama.cpp on every run.
       - name: Install dependencies
-        run: pip install .
+        run: pip install --extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cpu .
 
       # The repo has no tests, so compiling every file is the check that
       # catches syntax errors.

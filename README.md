@@ -3,19 +3,25 @@
 `local-llm` is a modular resource that provides local LLM inference capabilities for machines running on the Viam platform.
 
 The default model at this time is [TinyLlama 1.1B](https://huggingface.co/second-state/TinyLlama-1.1B-Chat-v1.0-GGUF).
-Other models can be used, as long as they are compatible with llama.cpp (see [Config options llm_repo and llm_file](#config)).
+Any GGUF model that llama.cpp supports can be used instead, including recent ones such as Gemma 4, Qwen 3 and Llama 3 (see [Config options llm_repo and llm_file](#config)).
+The module uses llama.cpp through [llama-cpp-python](https://github.com/abetlen/llama-cpp-python) 0.3.36; model families newer than that release need a module update.
 Also please keep in mind that some models will not run well on specific hardware.
 
 ## Prerequisites
 
-The machine using this module must have Python 3.8+ and pip installed on the system.
-python venv must also be installed:
+The machine needs `curl`. The module's first-run setup installs [uv](https://docs.astral.sh/uv/), which creates the Python environment.
 
-``` bash
-apt install python3.11-venv
-```
+## Hardware acceleration
 
-Where the python version may need to be modified based on the python version on your machine.
+The first-run setup picks a llama.cpp build for the machine:
+
+| Machine | llama.cpp build |
+|---------|-----------------|
+| NVIDIA GPU with the CUDA toolkit (`nvcc`), including Jetson | Compiled with CUDA during setup, which can take a while, especially on a Jetson |
+| macOS | Compiled with Metal during setup (about a minute on Apple silicon) |
+| Other Linux (arm64, x86_64) | Prebuilt CPU wheel |
+
+To run the model on the GPU, also set `n_gpu_layers` to `-1`.
 
 ## Config
 
@@ -25,7 +31,11 @@ Where the python version may need to be modified based on the python version on 
 
 **system_message** (Optional): The context for the chat system to use when interpreting input from the user. Defaults to "A chat between a curious user and an artificial intelligence assistant. The assistant must start by introducing themselves as 'The Great Provider'. The assistant gives helpful, detailed, and polite answers to the user's questions."
 
-**n_gpu_layers** (Optional): Number of layers to offload to GPU (-ngl). If -1, all layers are offloaded. Defaults to 0.
+**n_gpu_layers** (Optional): Number of layers to offload to GPU (-ngl). If -1, all layers are offloaded. Defaults to 0. Needs a GPU build of llama.cpp (see [Hardware acceleration](#hardware-acceleration)).
+
+**n_ctx** (Optional): Context size in tokens: the most the system message, prompt and answer can add up to. llama.cpp reserves memory for all of it when the model loads. Defaults to 2048.
+
+**chat_format** (Optional): A llama-cpp-python chat format name (for example "chatml") that overrides the chat template stored in the model file. Defaults to the model's own template. Versions before 0.3 always used "chatml".
 
 **temperature** (Optional): Float value to determine the randomness of the responses from the model. A high temperature, i.e. 5, would result in very different values while running the same prompt repeatedly. A value that's too low, i.e. 0.2, would result in more "robotic" responses. Default value is 0.75.
 
@@ -47,6 +57,19 @@ This is an example of using default settings with a [different model](https://hu
     "llm_file": "qwen1_5-0_5b-chat-q5_k_m.gguf"
 }
 ```
+
+This runs [Gemma 4 E2B](https://huggingface.co/ggml-org/gemma-4-E2B-it-GGUF) (a 2.8 GB download) on the GPU:
+
+```json
+{
+    "llm_repo": "ggml-org/gemma-4-E2B-it-GGUF",
+    "llm_file": "gemma-4-E2B-it-Q4_0.gguf",
+    "n_gpu_layers": -1,
+    "system_message": "You are a helpful robot assistant. Keep answers short."
+}
+```
+
+Models are downloaded once, into the module's data directory.
 
 ## Usage
 
