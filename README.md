@@ -29,11 +29,13 @@ To run the model on the GPU, also set `n_gpu_layers` to `-1`.
 
 **llm_file** (Optional): The HuggingFace file used to download the model.  Must be specified if *llm_repo* is specified. Defaults to "tinyllama-1.1b-chat-v1.0.Q5_K_M.gguf"
 
-**system_message** (Optional): The context for the chat system to use when interpreting input from the user. Defaults to "A chat between a curious user and an artificial intelligence assistant. The assistant must start by introducing themselves as 'The Great Provider'. The assistant gives helpful, detailed, and polite answers to the user's questions."
+**system_message** (Optional): The context for the chat system to use when interpreting input from the user. Defaults to "You are a helpful assistant. Answer clearly and concisely." Versions before 0.3 told the model to introduce itself as "The Great Provider"; set that text here to keep it.
 
 **n_gpu_layers** (Optional): Number of layers to offload to GPU (-ngl). If -1, all layers are offloaded. Defaults to 0. Needs a GPU build of llama.cpp (see [Hardware acceleration](#hardware-acceleration)).
 
 **n_ctx** (Optional): Context size in tokens: the most the system message, prompt and answer can add up to. llama.cpp reserves memory for all of it when the model loads. Defaults to 2048.
+
+**n_threads** (Optional): CPU threads used to read the prompt and generate the answer. Defaults to half the CPU cores. Lower it if the machine's other work is slowed down by chats, or if replies are slow while other work keeps the cores busy.
 
 **chat_format** (Optional): A llama-cpp-python chat format name (for example "chatml") that overrides the chat template stored in the model file. Defaults to the model's own template. Versions before 0.3 always used "chatml".
 
@@ -43,7 +45,7 @@ The following is an example configuration for this resource's attributes based o
 
 ```json
 {
-    "system_message": "A chat between a curious user and an artificial intelligence assistant. The assistant must start by introducing themselves as 'The Great Provider'. The assistant gives helpful, detailed, and polite answers to the user's questions.",
+    "system_message": "You are a helpful assistant. Answer clearly and concisely.",
     "n_gpu_layers": 0,
     "temperature": 0.75
 }
