@@ -2,7 +2,7 @@ import asyncio
 import os
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
-from typing import Any, ClassVar, Optional
+from typing import Any, ClassVar, Optional, Tuple
 from urllib.request import urlretrieve
 
 from chat_service_api import Chat
@@ -21,7 +21,7 @@ MODEL_DIR = os.environ.get(
     "VIAM_MODULE_DATA", os.path.join(os.path.expanduser("~"), ".data", "models")
 )
 
-DEFAULT_SYSTEM_MESSAGE = "A chat between a curious user and an artificial intelligence assistant. The assistant must start by introducing themselves as 'The Great Provider'. The assistant gives helpful, detailed, and polite answers to the user's questions."
+DEFAULT_SYSTEM_MESSAGE = "You are a helpful assistant. Answer clearly and concisely."
 
 
 @dataclass(frozen=True)
@@ -36,14 +36,22 @@ class Settings:
     chat_format: Optional[str] = None
     temperature: float = 0.75
     system_message: str = DEFAULT_SYSTEM_MESSAGE
+    # None: half the CPU cores, llama-cpp-python's default for generation.
+    n_threads: Optional[int] = None
     debug: bool = False
 
     @classmethod
     def from_attributes(cls, attrs: Mapping[str, Any]) -> "Settings":
         if "llm_repo" in attrs and "llm_file" not in attrs:
             raise ValueError("llm_file must be set when llm_repo is set")
+        n_threads = (
+            int(attrs["n_threads"]) if attrs.get("n_threads") is not None else None
+        )
+        if n_threads is not None and n_threads < 1:
+            raise ValueError("n_threads must be at least 1")
         d = cls()
         return cls(
+            n_threads=n_threads,
             llm_repo=str(attrs.get("llm_repo", d.llm_repo)),
             llm_file=str(attrs.get("llm_file", d.llm_file)),
             n_gpu_layers=int(attrs.get("n_gpu_layers", d.n_gpu_layers)),
@@ -57,6 +65,10 @@ class Settings:
     @property
     def model_path(self) -> str:
         return os.path.abspath(os.path.join(MODEL_DIR, self.llm_file))
+
+    @property
+    def threads(self) -> int:
+        return self.n_threads or max((os.cpu_count() or 2) // 2, 1)
 
 
 class Llm(Chat, Reconfigurable):
@@ -80,9 +92,12 @@ class Llm(Chat, Reconfigurable):
         return llm
 
     @classmethod
-    def validate_config(cls, config: ComponentConfig) -> Sequence[str]:
+    def validate_config(
+        cls, config: ComponentConfig
+    ) -> Tuple[Sequence[str], Sequence[str]]:
         Settings.from_attributes(struct_to_dict(config.attributes))
-        return []
+        # No required or optional dependencies.
+        return [], []
 
     def reconfigure(
         self, config: ComponentConfig, dependencies: Mapping[ResourceName, ResourceBase]
@@ -131,6 +146,11 @@ class Llm(Chat, Reconfigurable):
                 chat_format=settings.chat_format,
                 n_gpu_layers=settings.n_gpu_layers,
                 n_ctx=settings.n_ctx,
+                # llama-cpp-python reads prompts with every core by default. When other work keeps
+                # a core busy, the starved thread stalls the rest: on a 16-core robot running SLAM,
+                # a 70-token prompt took 7-9 s instead of 0.5 s. Use the generation count for both.
+                n_threads=settings.threads,
+                n_threads_batch=settings.threads,
                 verbose=settings.debug,
             )
         except asyncio.CancelledError:
