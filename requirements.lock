@@ -45,6 +45,6 @@ pymongo==4.18.1
 typing-extensions==4.16.0
     # via llama-cpp-python
     # via viam-sdk
-viam-sdk==0.82.0
+viam-sdk==0.85.2
     # via chat-service-api
     # via local-llm
